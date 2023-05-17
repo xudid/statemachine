@@ -18,5 +18,8 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {}
+    "require": {},
+    "scripts": {
+	"test": "php vendor/bin/phpunit"
+    }
 }
