@@ -10,6 +10,8 @@ class StateMachine
     private string $currentState = '';
     private array $states = [];
     private array $transitions = [];
+    private $enterStateCallbacks = [];
+    private $leaveStateCallbacks = [];
 
     /**
      * @throws Exception
@@ -75,16 +77,12 @@ class StateMachine
             return $this;
         }
 
-        $possibleTransitions = $this->getStateTransitions($this->currentState);
-        foreach ($possibleTransitions as $possibleTransition) {
-            if ($possibleTransition->getTargetState() === $state) {
-                $transition = $possibleTransition;
-                break;
-            }
-        }
-
+        $transition = $this->getTransition($state);
         if ($transition->check()) {
+            $this->executeBeforeCallbacks($state);
+            $oldState = $this->currentState;
             $this->currentState = $state;
+            $this->executeAfterCallbacks($oldState);
         }
 
         return $this;
@@ -137,5 +135,50 @@ class StateMachine
     public function getStateTransitions(string $state): mixed
     {
         return $this->transitions[$state];
+    }
+
+    public function onEnterState(string $stateName, Callable $callable)
+    {
+        $this->enterStateCallbacks[$stateName][] = $callable;
+    }
+
+    public function onLeaveState(string $stateName, Callable $callable)
+    {
+        $this->leaveStateCallbacks[$stateName][] = $callable;
+    }
+
+    public function getTransition(string $state): mixed
+    {
+        $possibleTransitions = $this->getStateTransitions($this->currentState);
+        foreach ($possibleTransitions as $possibleTransition) {
+            if ($possibleTransition->getTargetState() === $state) {
+                return $possibleTransition;
+            }
+        }
+
+        return null;
+    }
+
+    public function executeBeforeCallbacks($state): void
+    {
+        if (isset($this->enterStateCallbacks[$state])) {
+            $callbacks = $this->enterStateCallbacks[$state];
+            $this->executeCallbacks($callbacks);
+        }
+    }
+
+    public function executeAfterCallbacks($state): void
+    {
+        if (isset($this->leaveStateCallbacks[$state])) {
+            $callbacks = $this->leaveStateCallbacks[$state];
+            $this->executeCallbacks($callbacks);
+        }
+    }
+
+    public function executeCallbacks(mixed $callbacks): void
+    {
+        foreach ($callbacks as $callback) {
+            call_user_func($callback);
+        }
     }
 }

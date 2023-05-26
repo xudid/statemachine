@@ -234,6 +234,44 @@ class StateMachineTest extends TestCase
         $stateMachine->setState('second');
         $this->assertTrue($stateMachine->isCurrentState('initial'));
     }
+
+    public function testStateMachineExecuteCallableWhenEnterState()
+    {
+        $stateMachine = new StateMachine();
+        $stateMachine->addState('initial');
+        $stateMachine->addState('second');
+        $transition = new Transition('initial', 'second');
+        $stateMachine->addTransition($transition);
+        $stateMachine->onEnterState('second', function () {echo 'aze';});
+        $stateMachine->onEnterState('second', function () {echo 'qsd';});
+        $stateMachine->setState('second');
+        $this->expectOutputString('azeqsd');
+    }
+
+    public function testStateMachineExecuteCallableWhenLeaveState()
+    {
+        $stateMachine = new StateMachine();
+        $stateMachine->addState('initial');
+        $stateMachine->addState('second');
+        $transition = new Transition('initial', 'second');
+        $stateMachine->addTransition($transition);
+        $stateMachine->onLeaveState('initial', function () {echo 'aze';});
+        $stateMachine->onLeaveState('initial', function () {echo 'qsd';});
+        $stateMachine->setState('second');
+        $this->expectOutputString('azeqsd');
+    }
+
+    public function testAutoTransitionWorks()
+    {
+        $stateMachine = new StateMachine();
+        $stateMachine->addState('initial');
+        $transition = new Transition('initial', 'initial');
+        $stateMachine->addTransition($transition);
+        $stateMachine->onEnterState('initial', function () {echo 'aze';});
+        $stateMachine->onLeaveState('initial', function () {echo 'qsd';});
+        $stateMachine->setState('initial');
+        $this->expectOutputString('azeqsd');
+    }
     public function testAddStateIsFluent()
     {
         $stateMachine = new StateMachine();
