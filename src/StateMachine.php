@@ -75,7 +75,17 @@ class StateMachine
             return $this;
         }
 
-        $this->currentState = $state;
+        $possibleTransitions = $this->getStateTransitions($this->currentState);
+        foreach ($possibleTransitions as $possibleTransition) {
+            if ($possibleTransition->getTargetState() === $state) {
+                $transition = $possibleTransition;
+                break;
+            }
+        }
+
+        if ($transition->check()) {
+            $this->currentState = $state;
+        }
 
         return $this;
     }

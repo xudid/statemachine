@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Xudid\StateMachine\GuardCondition;
 use Xudid\StateMachine\StateMachine;
 use Xudid\StateMachine\Transition;
 
@@ -210,6 +211,29 @@ class StateMachineTest extends TestCase
         $this->assertTrue($stateMachine->isCurrentState('second'));
     }
 
+    public function testCurrentStateChangeIfTransitionFulfillGuardCondition()
+    {
+        $stateMachine = new StateMachine();
+        $stateMachine->addState('initial');
+        $stateMachine->addState('second');
+        $transition = new Transition('initial', 'second');
+        $transition->addGuardCondition(new GuardCondition(function (){return true;}));
+        $stateMachine->addTransition($transition);
+        $stateMachine->setState('second');
+        $this->assertTrue($stateMachine->isCurrentState('second'));
+    }
+
+    public function testCurrentStateNotChangeIfTransitionNotFulfillGuardCondition()
+    {
+        $stateMachine = new StateMachine();
+        $stateMachine->addState('initial');
+        $stateMachine->addState('second');
+        $transition = new Transition('initial', 'second');
+        $transition->addGuardCondition(new GuardCondition(function (){return false;}));
+        $stateMachine->addTransition($transition);
+        $stateMachine->setState('second');
+        $this->assertTrue($stateMachine->isCurrentState('initial'));
+    }
     public function testAddStateIsFluent()
     {
         $stateMachine = new StateMachine();
