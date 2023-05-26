@@ -8,7 +8,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Xudid\\Statemachine\\": "src/"
+            "Xudid\\StateMachine\\": "src/"
         }
     },
     "authors": [
