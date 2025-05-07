@@ -137,14 +137,18 @@ class StateMachine
         return $this->transitions[$state];
     }
 
-    public function onEnterState(string $stateName, Callable $callable)
+    public function onEnterState(string $stateName, Callable $callable): static
     {
         $this->enterStateCallbacks[$stateName][] = $callable;
+
+		return $this;
     }
 
-    public function onLeaveState(string $stateName, Callable $callable)
+    public function onLeaveState(string $stateName, Callable $callable): static
     {
         $this->leaveStateCallbacks[$stateName][] = $callable;
+
+		return $this;
     }
 
     public function getTransition(string $state): mixed
