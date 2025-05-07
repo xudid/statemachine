@@ -6,12 +6,12 @@ use Exception;
 
 class StateMachine
 {
-    private string $initialState = '';
-    private string $currentState = '';
-    private array $states = [];
-    private array $transitions = [];
-    private $enterStateCallbacks = [];
-    private $leaveStateCallbacks = [];
+    protected string $initialState = '';
+    protected string $currentState = '';
+    protected array $states = [];
+    protected array $transitions = [];
+    protected $enterStateCallbacks = [];
+    protected $leaveStateCallbacks = [];
 
     /**
      * @throws Exception
