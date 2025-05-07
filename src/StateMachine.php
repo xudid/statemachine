@@ -79,10 +79,9 @@ class StateMachine
 
         $transition = $this->getTransition($state);
         if ($transition->check()) {
-            $this->executeBeforeCallbacks($state);
-            $oldState = $this->currentState;
-            $this->currentState = $state;
-            $this->executeAfterCallbacks($oldState);
+			$this->executeAfterCallbacks($this->currentState);
+			$this->currentState = $state;
+			$this->executeBeforeCallbacks($state);
         }
 
         return $this;

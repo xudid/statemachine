@@ -261,6 +261,19 @@ class StateMachineTest extends TestCase
         $this->expectOutputString('azeqsd');
     }
 
+	public function testStateMachineExecuteCallableWhenLeaveStateBeforeWhenEnterState()
+	{
+		$stateMachine = new StateMachine();
+		$stateMachine->addState('initial');
+		$stateMachine->addState('second');
+		$transition = new Transition('initial', 'second');
+		$stateMachine->addTransition($transition);
+		$stateMachine->onLeaveState('initial', function () {echo 'aze';});
+		$stateMachine->onEnterState('second', function () {echo 'qsd';});
+		$stateMachine->setState('second');
+		$this->expectOutputString('azeqsd');
+	}
+
     public function testAutoTransitionWorks()
     {
         $stateMachine = new StateMachine();
@@ -270,7 +283,7 @@ class StateMachineTest extends TestCase
         $stateMachine->onEnterState('initial', function () {echo 'aze';});
         $stateMachine->onLeaveState('initial', function () {echo 'qsd';});
         $stateMachine->setState('initial');
-        $this->expectOutputString('azeqsd');
+        $this->expectOutputString('qsdaze');
     }
     public function testAddStateIsFluent()
     {
