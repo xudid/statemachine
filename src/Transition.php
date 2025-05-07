@@ -2,6 +2,8 @@
 
 namespace Xudid\StateMachine;
 
+use Closure;
+
 class Transition
 {
     private string $sourceState;
@@ -32,6 +34,13 @@ class Transition
 
         return $this->guardTransition->evaluate();
     }
+
+	public function guard(Closure $closure): static
+	{
+		$this->addGuardCondition(new GuardCondition($closure));
+
+		return $this;
+	}
 
     public function addGuardCondition(GuardCondition $condition)
     {
