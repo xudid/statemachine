@@ -159,6 +159,17 @@ class StateMachine
         return null;
     }
 
+	/**
+	 * @throws Exception
+	 */
+	protected function transition($sourceState, $targetState): Transition
+	{
+		$transition = new Transition($sourceState, $targetState);
+		$this->addTransition($transition);
+
+		return $transition;
+	}
+
     public function executeBeforeCallbacks($state): void
     {
         if (isset($this->enterStateCallbacks[$state])) {
