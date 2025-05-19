@@ -74,7 +74,7 @@ class StateMachine
         }
 
         if (!$this->hasTransition($this->currentState, $state)) {
-            return $this;
+			throw new Exception('Invalid transition');
         }
 
         $transition = $this->getTransition($state);
