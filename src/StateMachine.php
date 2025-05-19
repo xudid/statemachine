@@ -165,7 +165,7 @@ class StateMachine
 	/**
 	 * @throws Exception
 	 */
-	protected function transition($sourceState, $targetState): Transition
+	public function transition($sourceState, $targetState): Transition
 	{
 		$transition = new Transition($sourceState, $targetState);
 		$this->addTransition($transition);
