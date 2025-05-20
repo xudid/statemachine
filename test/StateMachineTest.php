@@ -116,6 +116,7 @@ class StateMachineTest extends TestCase
         $stateMachine = new StateMachine();
         $stateMachine->addState('initial');
         $stateMachine->addState('second');
+		$stateMachine->transition('initial', 'second');
         $stateMachine->setState('second');
         $this->expectException(Exception::class);
         $stateMachine->setState('third');
@@ -196,8 +197,8 @@ class StateMachineTest extends TestCase
         $stateMachine = new StateMachine();
         $stateMachine->addState('initial');
         $stateMachine->addState('second');
+		$this->expectException(Exception::class);
         $stateMachine->setState('second');
-        $this->assertTrue($stateMachine->isCurrentState('initial'));
     }
 
     public function testCurrentStateChangeIfTransitionHasNotGuardCondition()
@@ -289,16 +290,19 @@ class StateMachineTest extends TestCase
     {
         $stateMachine = new StateMachine();
         $stateMachine->addState('initial')
-            ->addState('second')
-            ->setState('second');
+            ->addState('second');
         $this->expectNotToPerformAssertions();
     }
 
     public function testSetStateIsFluent()
     {
-        (new StateMachine())->addState('initial')
-            ->addState('second')
-            ->setState('second');
+		$stateMachine  = (new StateMachine())
+			->addState('initial')
+			->addState('second');
+		$stateMachine->transition('initial', 'second');
+		$stateMachine->setState('second')
+			->addState('third');
+
         $this->expectNotToPerformAssertions();
     }
 }
